@@ -13,9 +13,9 @@ Mockito is unusable on python3 because of this and pip installs will fail with
 error: invalid command 'bdist_egg'
 ```
 
-There is a pull request pending at bitbucket (yes the sources are on bitbucket, not on code.google.com like the metadata on PyPI pretends) but there's been no activity up until now.
+There is [a pull request pending at bitbucket](https://bitbucket.org/szczepiq/mockito-python/pull-request/2/dont-download-distribute/diff
+) (yes the sources are on bitbucket, not on code.google.com like the metadata on PyPI pretends) but there's been no activity up until now.
 
-https://bitbucket.org/szczepiq/mockito-python/pull-request/2/dont-download-distribute/diff
 
 
 You can use this project (which is on PyPI) until the pull request is merged.
