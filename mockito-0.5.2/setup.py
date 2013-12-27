@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from distribute_setup import use_setuptools
-use_setuptools()
-
 try:
     from setuptools import setup
 except ImportError:
@@ -14,7 +11,7 @@ extra = {}
 if sys.version_info >= (3,):
     extra['use_2to3'] = True
 
-setup(name='mockito',
+setup(name='mockito-without-hardcoded-distribute-version',
       version='0.5.2',
       packages=['mockito', 'mockito_test', 'mockito_util'],
       url='http://code.google.com/p/mockito-python',
