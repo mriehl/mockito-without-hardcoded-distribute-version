@@ -221,7 +221,7 @@ class InorderVerifyTest(VerificationTestBase):
   def testErrorMessage(self):
     self.mock.second()
     self.mock.first()
-    self.assertRaisesMessage("\nWanted first() to be invoked, got second() instead", inorder.verify(self.mock).first)
+    self.assertRaisesMessage('\nWanted first() to be invoked, \ngot    second() instead.', inorder.verify(self.mock).first)
     
 
   def testPassesMixedVerifications(self):

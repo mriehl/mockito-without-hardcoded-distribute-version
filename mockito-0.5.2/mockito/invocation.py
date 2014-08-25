@@ -40,7 +40,8 @@ class Invocation(object):
     self.named_params = named_params
     
   def __repr__(self):
-    return self.method_name + "(" + ", ".join([repr(p) for p in self.params]) + ")"
+    named_params_formated = ", ".join([str(key)+"="+str(self.named_params[key]) for key in self.named_params])
+    return self.method_name + "(" + ", ".join([repr(p) for p in self.params]) + named_params_formated + ")"
 
   def answer_first(self):
     return self.answers[0].answer()
@@ -60,8 +61,13 @@ class MatchingInvocation(Invocation):
       return False
     if len(self.named_params) != len(invocation.named_params):
       return False
-    if self.named_params.keys() != invocation.named_params.keys():
-      return False
+    import sys
+    if sys.version_info < (2, 5): 
+        if list(self.named_params.keys()) != list(invocation.named_params.keys()):
+            return False
+    else:
+        if list(sorted(self.named_params.keys(), key=str.lower)) != list(sorted(invocation.named_params.keys(), key=str.lower)):
+            return False
 
     for x, p1 in enumerate(self.params):
       if not self.compare(p1, invocation.params[x]):
