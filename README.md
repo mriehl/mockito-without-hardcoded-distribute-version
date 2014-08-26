@@ -1,3 +1,5 @@
+If you are looking for a mockito-like fluent interface for mock check out [fluentmock](https://github.com/aelgru/fluentmock)
+
 mockito-without-hardcoded-distribute-version
 ============================================
 
