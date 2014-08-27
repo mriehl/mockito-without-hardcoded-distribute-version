@@ -18,7 +18,10 @@
 #   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #   THE SOFTWARE.
 
+import sys
+
 import matchers
+
 
 
 class InvocationError(AssertionError):
@@ -34,18 +37,18 @@ class Invocation(object):
     self.named_params = {}
     self.answers = []
     self.strict = mock.strict
-    
+
   def _remember_params(self, params, named_params):
     self.params = params
     self.named_params = named_params
-    
+
   def __repr__(self):
     named_params_formated = ", ".join([str(key)+"="+str(self.named_params[key]) for key in self.named_params])
     return self.method_name + "(" + ", ".join([repr(p) for p in self.params]) + named_params_formated + ")"
 
   def answer_first(self):
     return self.answers[0].answer()
-  
+
 class MatchingInvocation(Invocation):
   @staticmethod
   def compare(p1, p2):
@@ -61,8 +64,7 @@ class MatchingInvocation(Invocation):
       return False
     if len(self.named_params) != len(invocation.named_params):
       return False
-    import sys
-    if sys.version_info < (2, 5): 
+    if sys.version_info < (2, 5):
         if list(self.named_params.keys()) != list(invocation.named_params.keys()):
             return False
     else:
@@ -72,27 +74,27 @@ class MatchingInvocation(Invocation):
     for x, p1 in enumerate(self.params):
       if not self.compare(p1, invocation.params[x]):
           return False
-      
+
     for x, p1 in self.named_params.iteritems():
       if not self.compare(p1, invocation.named_params[x]):
           return False
-      
+
     return True
-  
+
 class RememberedInvocation(Invocation):
   def __call__(self, *params, **named_params):
     self._remember_params(params, named_params)
     self.mock.remember(self)
-    
+
     for matching_invocation in self.mock.stubbed_invocations:
       if matching_invocation.matches(self):
         return matching_invocation.answer_first()
 
     return None
-  
+
 class RememberedProxyInvocation(Invocation):
   '''Remeber params and proxy to method of original object.
-  
+
   Calls method on original object and returns it's return value.
   '''
   def __call__(self, *params, **named_params):
@@ -115,41 +117,41 @@ class VerifiableInvocation(MatchingInvocation):
 
     verification = self.mock.pull_verification()
     verification.verify(self, len(matched_invocations))
-    
+
     for invocation in matched_invocations:
       invocation.verified = True
-  
+
 class StubbedInvocation(MatchingInvocation):
   def __init__(self, *params):
-    super(StubbedInvocation, self).__init__(*params)  
+    super(StubbedInvocation, self).__init__(*params)
     if self.mock.strict:
       self.ensure_mocked_object_has_method(self.method_name)
-        
-  def ensure_mocked_object_has_method(self, method_name):  
+
+  def ensure_mocked_object_has_method(self, method_name):
     if not self.mock.has_method(method_name):
-      raise InvocationError("You tried to stub a method '%s' the object (%s) doesn't have." 
+      raise InvocationError("You tried to stub a method '%s' the object (%s) doesn't have."
                             % (method_name, self.mock.mocked_obj))
-    
-        
+
+
   def __call__(self, *params, **named_params):
     self._remember_params(params, named_params)
     return AnswerSelector(self)
-  
+
   def stub_with(self, answer):
     self.answers.append(answer)
     self.mock.stub(self.method_name)
     self.mock.finish_stubbing(self)
-    
+
 class AnswerSelector(object):
   def __init__(self, invocation):
     self.invocation = invocation
     self.answer = None
-  
+
   def thenReturn(self, *return_values):
     for return_value in return_values:
       self.__then(Return(return_value))
     return self
-    
+
   def thenRaise(self, *exceptions):
     for exception in exceptions:
       self.__then(Raise(exception))
@@ -161,34 +163,34 @@ class AnswerSelector(object):
       self.invocation.stub_with(self.answer)
     else:
       self.answer.add(answer)
-      
-    return self      
+
+    return self
 
 class CompositeAnswer(object):
   def __init__(self, answer):
     self.answers = [answer]
-    
+
   def add(self, answer):
     self.answers.insert(0, answer)
-    
+
   def answer(self):
     if len(self.answers) > 1:
       a = self.answers.pop()
     else:
       a = self.answers[0]
-      
+
     return a.answer()
 
 class Raise(object):
   def __init__(self, exception):
     self.exception = exception
-    
+
   def answer(self):
     raise self.exception
-  
+
 class Return(object):
   def __init__(self, return_value):
     self.return_value = return_value
-    
+
   def answer(self):
     return self.return_value
