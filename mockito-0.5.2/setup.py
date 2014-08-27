@@ -12,10 +12,9 @@ if sys.version_info >= (3,):
     extra['use_2to3'] = True
 
 setup(name='mockito-without-hardcoded-distribute-version',
-      version='0.5.2',
+      version='0.5.3',
       packages=['mockito', 'mockito_test', 'mockito_util'],
-      url='http://code.google.com/p/mockito-python',
-      download_url='http://code.google.com/p/mockito-python/downloads/list',
+      url='https://github.com/mriehl/mockito-without-hardcoded-distribute-version',
       maintainer='Justin Hopper',
       maintainer_email='mockito-python@googlegroups.com',
       license='MIT',
