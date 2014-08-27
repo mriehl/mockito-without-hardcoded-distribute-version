@@ -29,28 +29,28 @@ class VerificationErrorsTest(TestBase):
     try:
       verify(theMock).foo()
     except VerificationError, e:
-      self.assertEquals("\nWanted but not invoked: foo()", str(e))
+      self.assertEquals('\nWanted but not invoked:  foo()\nInstead got:             []', str(e))
       
   def testPrintsNicelyOneArgument(self):
     theMock = mock()
     try:
       verify(theMock).foo("bar")
     except VerificationError, e:
-      self.assertEquals("\nWanted but not invoked: foo('bar')", str(e))
+      self.assertEquals("\nWanted but not invoked:  foo('bar')\nInstead got:             []", str(e))
 
   def testPrintsNicelyArguments(self):
     theMock = mock()
     try:
       verify(theMock).foo(1, 2)
     except VerificationError, e:
-      self.assertEquals("\nWanted but not invoked: foo(1, 2)", str(e))
+      self.assertEquals('\nWanted but not invoked:  foo(1, 2)\nInstead got:             []', str(e))
     
   def testPrintsNicelyStringArguments(self):
     theMock = mock()
     try:
       verify(theMock).foo(1, 'foo')
     except VerificationError, e:
-      self.assertEquals("\nWanted but not invoked: foo(1, 'foo')", str(e))
+      self.assertEquals("\nWanted but not invoked:  foo(1, 'foo')\nInstead got:             []", str(e))
       
   def testPrintsOutThatTheActualAndExpectedInvocationCountDiffers(self):
       theMock = mock()
